@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ContentView: View {
-    @State private var types: [String] = []
+    @State private var listEntries: [String] = []
     @State private var allowFileURL: Bool = true
     @State private var allowImage: Bool = true
     @State private var allowData: Bool = true
@@ -29,7 +29,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Text("Drag a file on me!")
-            List(types, id: \.self) { type in
+            List(listEntries, id: \.self) { type in
                 Text(type)
             }
             Toggle(isOn: $allowFileURL, label: { Text("Allow File URLs") })
@@ -38,9 +38,12 @@ struct ContentView: View {
             Toggle(isOn: $allowPNG, label: { Text("Allow PNGs") })
         }
         .padding()
-        .onDrop(of: droppableTypes, isTargeted: nil, perform: { items, _ in
-            if let first = items.first {
-                types = first.registeredTypeIdentifiers.map { $0 }
+        .onDrop(of: droppableTypes, isTargeted: nil, perform: { providers, _ in
+            listEntries = [
+                "Drop with \(providers.count) items"
+            ]
+            for provider in providers {
+                listEntries += provider.registeredTypeIdentifiers.map { $0 }
             }
             return true
         })
