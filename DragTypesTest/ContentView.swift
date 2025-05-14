@@ -43,7 +43,16 @@ struct ContentView: View {
                 "Drop with \(providers.count) items"
             ]
             for provider in providers {
+                let canLoadURL = provider.canLoadObject(ofClass: URL.self)
+                let hasURLProvider = provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier)
+                listEntries.append("Is able to be URL: \(canLoadURL)")
+                listEntries.append("Has Item Conforming to URL: \(hasURLProvider)")
+
+                listEntries.append("Registered Type Identifiers:")
                 listEntries += provider.registeredTypeIdentifiers.map { $0 }
+
+                listEntries.append("Registered Content Types:")
+                listEntries += provider.registeredContentTypes.map { $0.identifier }
             }
             return true
         })
